@@ -7,6 +7,6 @@ object Test2{
 
    val cta = new ResponseCheckTransferAvailability(test.toString)
    val transferList = cta.transferList
-   for(t <- transferList) println(t.code)
+   for(t <- transferList) println(t.code)   
  }
 }
