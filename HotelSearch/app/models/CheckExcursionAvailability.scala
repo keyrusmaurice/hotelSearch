@@ -36,7 +36,7 @@ class ResponseCheckExcursionAvailability(xmlString : String) extends Response(xm
   val environment = env.text
   
   private val checkExcursionAvailability = xml \ "CheckExcursionAvailability"
-  val date = (checkExcursionAvailability \ "Date").text
+  val date = Constants.dateFormat.parse( (checkExcursionAvailability \ "Date").text )
   private val excusionsXml = (checkExcursionAvailability \ "ExcursionList" \ "Excursion").toList 
   val excusions = excusionsXml.map(new Excusions(_)) 
 }
@@ -52,7 +52,7 @@ class Excusions(xml : scala.xml.Node) extends XmlResponse(xml){
 }
 
 class Availability (xml : scala.xml.Node) extends XmlResponse(xml){
-  val date = (xml \ "@Date").text
+  val date = Constants.dateFormat.parse((xml \ "@Date").text)
   val available = (xml \ "Available").text
   val amount = (xml \ "Amount").text.toInt
 }

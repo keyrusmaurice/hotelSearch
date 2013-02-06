@@ -49,8 +49,8 @@ class ResponseHotelAvailability(xmlString : String) extends Response(xmlString) 
   private val checkHotelAvailability = xml \ "CheckHotelAvailability"
 
   private val serviceDateRange = checkHotelAvailability \ "ServiceDateRange"
-  val checkin = (serviceDateRange \\ "@CheckIn").text
-  val checkout = (serviceDateRange \\ "@CheckIn").text
+  val checkin = Constants.dateFormat.parse( (serviceDateRange \\ "@CheckIn").text)
+  val checkout = Constants.dateFormat.parse( (serviceDateRange \\ "@CheckIn").text)
   
   val hotelCityCode = (checkHotelAvailability \ "HotelCityCode").text
   val cityName = (checkHotelAvailability \ "CityName").text
@@ -112,8 +112,8 @@ class SplitOffer(xml : scala.xml.Node) extends XmlResponse(xml) {
   private val splitRoom = (xml \ "SplitRoom")
   val code = (splitRoom \ "@Code").text
   val name = (splitRoom \ "@Name").text
-  val checkIn = (splitRoom \ "@CheckIn").text
-  val checkOut = (splitRoom \ "@CheckOut").text
+  val checkIn = Constants.dateFormat.parse((splitRoom \ "@CheckIn").text)
+  val checkOut = Constants.dateFormat.parse( (splitRoom \ "@CheckOut").text)
 
   private val roomPriceList = (xml \ "RoomPriceList" \ "Price").toList
   val priceList = roomPriceList.map(new RoomPriceList(_))

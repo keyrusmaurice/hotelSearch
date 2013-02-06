@@ -34,7 +34,7 @@ class ResponseCheckTransferAvailability(xmlString : String) extends Response(xml
   
   private val checkTransferAvailability = xml \ "CheckTransferAvailability"
 
-  val date = (checkTransferAvailability \ "Date").text
+  val date = Constants.dateFormat.parse( (checkTransferAvailability \ "Date").text)
   val pickUpPoint = (checkTransferAvailability \ "PickUpPoint").text  
   val dropOffPoint = (checkTransferAvailability \ "DropOffPoint").text
   val currency = (checkTransferAvailability \ "Currency").text
