@@ -13,3 +13,13 @@ object Constants {
     "041" -> "Abu Dhabi West Coast Hotels", "043" -> "Abu Dhabi Yas Island Hotels", "046" -> "Abu Dhabi Desert Resort Hotels", "100" -> "Muscat Hotels",
     "101" -> "Oman Hotels - Interior Regions", "102" -> "Salalah Hotels", "200" -> "Bahrain Hotels", "300" -> "Doha Hotels")
 }
+
+object Salutation extends Enumeration {
+    type Salutation = Value
+    val Mr, Mrs, Mstr, Miss, Inf = Value
+}
+
+object TypePassager extends Enumeration {
+    type TypePassager = Value
+    val Adult, Child, Infant = Value
+}
