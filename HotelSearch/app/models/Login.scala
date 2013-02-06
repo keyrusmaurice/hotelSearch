@@ -1,7 +1,7 @@
 package models
 import scala.xml._
 
-class  RequestLogin(username : String, password : String, agentCode : String) extends Request {
+class RequestLogin(username : String, password : String, agentCode : String) extends Request {
   private val xml = <Request>
       <Function>CREATE_SESSION</Function>
       <Credentials UserName={username} Password={password} AgentCode={agentCode} />
@@ -10,7 +10,7 @@ class  RequestLogin(username : String, password : String, agentCode : String) ex
   override def toString = xml.toString   
 }
 
-class  ResponseLogin(xmlString :String) extends Response(xmlString) { 
+class ResponseLogin(xmlString :String) extends Response(xmlString) { 
   private val sess = xml \ "SessionID"
   val sessionID = sess.text
   private val env = xml \ "Environment"

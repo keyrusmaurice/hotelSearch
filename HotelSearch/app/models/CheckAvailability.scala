@@ -3,7 +3,7 @@ package models
 import scala.xml._
 import java.util.Date
 
-class  HotelAvailabilityRequest( sessionID : String, checkIn : Date, checkOut : Date,
+class  RequestHotelAvailability( sessionID : String, checkIn : Date, checkOut : Date,
                           hotelCode  : String = "", hotelName :String="", categoryCode : String = "",
                           hotelCityCode : String = Constants.hotelCityCodes("Dubai"), units : Int = 1, adults : Int = 1, children : Int = 0 ) extends Request {
   private val checkInStr  = Constants.dateFormat.format(checkIn)

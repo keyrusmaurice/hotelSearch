@@ -3,7 +3,7 @@ package models
 import scala.xml._
 import java.util.Date
 
-class  CheckTransferAvailabilityRequest( sessionID : String, date : Date, 
+class  RequestCheckTransferAvailability( sessionID : String, date : Date, 
                           pickUpPoint  : String = "", dropOffPoint :String="", 
                           adults : Int = 1, children : Int = 0 ) extends Request {
   private val dateStr  = Constants.dateFormat.format(date) 
