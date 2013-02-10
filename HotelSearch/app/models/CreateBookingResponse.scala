@@ -33,8 +33,18 @@ object r {
                 </HotelList>
                 <TransferList>
                   <Transfer>
-                    <Index>2</Index><Amount>100.00</Amount><Status>I</Status><Adults>1</Adults><Children>0</Children><Date>2010-05-25</Date><Time>2330</Time><PickUpPoint>DXBAPT</PickUpPoint><PickUpPointName>Dubai Airport</PickUpPointName><DropOffPoint>DXA173</DropOffPoint><DropOffPointName>Atlantis - The Palm Dubai</DropOffPointName>
-                    <TransferType>SOMPOW</TransferType><TransferTypeName>Private Car/One Way</TransferTypeName>
+                    <Index>2</Index><Amount>100.00</Amount>
+                    <Status>I</Status>
+                    <Adults>1</Adults>
+                    <Children>0</Children>
+                    <Date>2010-05-25</Date>
+                    <Time>2330</Time>
+                    <PickUpPoint>DXBAPT</PickUpPoint>
+                    <PickUpPointName>Dubai Airport</PickUpPointName>
+                    <DropOffPoint>DXA173</DropOffPoint>
+                    <DropOffPointName>Atlantis - The Palm Dubai</DropOffPointName>
+                    <TransferType>SOMPOW</TransferType>
+                    <TransferTypeName>Private Car/One Way</TransferTypeName>
                     <CancellationAllowed>Y</CancellationAllowed>
                     <PassengerIndices> <PassengerIndex>1</PassengerIndex> </PassengerIndices>
                     <Remarks></Remarks>
@@ -100,4 +110,7 @@ class ResponseCreateBooking(xmlString: String) extends Response(xmlString) {
   val bookingCurrency = (booking \ "BookingAmount" \ "@Currency")
   val bookingStatus = (booking \ "BookingmStatus").text
   val passengerList = PassengerList.fromXml((booking \\ "PassengerList").head)
+  val hotelList = HotelBookList.fromXml((booking \\ "HotelList").head)
+  val transfer = TransferToHotel.fromXml((booking \\ "TransferList").head)
+  println(transfer.transferTypeName)
 }
