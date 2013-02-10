@@ -22,27 +22,6 @@ class RequestCreateBooking(sessionID: String, clientReference: String, currency:
     </Request>
 }
 
-class Passenger(index: Int = 1, title: String, salutation: Salutation = Mr,
-  firstName: String, lastName: String, passengerType: TypePassager = Adult,
-  lead: String = "N", age: String = "") {
-
-  def toXml: Node = {
-    val ptype: String = if (passengerType == Adult) "A" else if (passengerType == Child) "C" else "I"
-    var xml = <Passenger Index={ index.toString } Title={ title } FirstName={ firstName } LastName={ lastName } Type={ ptype }/>
-
-    if (lead == "Y") xml = xml % Attribute(None, "Lead", Text("Y"), Null)
-    if (age != "") xml = xml % Attribute(None, "Age", Text(age), Null)
-
-    xml
-  }
-}
-
-class PassengerList(passengers: List[Passenger]) {
-  def toXml: NodeSeq = {
-    <PassengerList>{ passengers.map(p => p.toXml) }</PassengerList>
-  }
-}
-
 class HotelBook(actionCode: String = "", index: Int, hotelCode: String,
   roomTypeCode: String, mealType: String, units: Int, serviceDateRange: ServiceDateRange,
   guestCount: GuestCount, extra: Extra, price: Price, paxAllocation: PaxAllocation,
@@ -103,13 +82,13 @@ class PaxAllocation(unitNo : Int = 1, passengerIndex : List[Int]){
   }
 }
 
-class SplitOfferList(splitOfferList : List[SplitOffer]) {
+class SplitOfferList(splitOfferList : List[SplitOffer2]) {
   def toXml = {
     <SplitOfferList>{splitOfferList.map(x => x.toXml)}</SplitOfferList>
   }
 }
 
-class SplitOffer(code : String, checkIn : String, checkOut : String){
+class SplitOffer2(code : String, checkIn : String, checkOut : String){
   def toXml ={
     <SplitOffer> <SplitRoom Code={code} CheckIn={checkIn} CheckOut={checkOut} /> </SplitOffer>
   }
