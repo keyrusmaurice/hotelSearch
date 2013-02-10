@@ -8,3 +8,5 @@ resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/release
 addSbtPlugin("play" % "sbt-plugin" % "2.0.4")
 
 //addSbtPlugin("com.orrsella" % "sbt-sublime" % "1.0.4")
+
+addSbtPlugin("org.ensime" % "ensime-sbt-cmd" % "0.1.0" )

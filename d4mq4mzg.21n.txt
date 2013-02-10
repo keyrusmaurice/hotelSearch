@@ -1,0 +1,73 @@
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	new file:   HotelSearch/.ensime
+#	new file:   HotelSearch/.ensime_lucene/_0.fdt
+#	new file:   HotelSearch/.ensime_lucene/_0.fdx
+#	new file:   HotelSearch/.ensime_lucene/_0.fnm
+#	new file:   HotelSearch/.ensime_lucene/_0.frq
+#	new file:   HotelSearch/.ensime_lucene/_0.nrm
+#	new file:   HotelSearch/.ensime_lucene/_0.prx
+#	new file:   HotelSearch/.ensime_lucene/_0.tii
+#	new file:   HotelSearch/.ensime_lucene/_0.tis
+#	new file:   HotelSearch/.ensime_lucene/_1.fdt
+#	new file:   HotelSearch/.ensime_lucene/_1.fdx
+#	new file:   HotelSearch/.ensime_lucene/_1.fnm
+#	new file:   HotelSearch/.ensime_lucene/_1.frq
+#	new file:   HotelSearch/.ensime_lucene/_1.nrm
+#	new file:   HotelSearch/.ensime_lucene/_1.prx
+#	new file:   HotelSearch/.ensime_lucene/_1.tii
+#	new file:   HotelSearch/.ensime_lucene/_1.tis
+#	new file:   HotelSearch/.ensime_lucene/_2.fdt
+#	new file:   HotelSearch/.ensime_lucene/_2.fdx
+#	new file:   HotelSearch/.ensime_lucene/_2.fnm
+#	new file:   HotelSearch/.ensime_lucene/_2.frq
+#	new file:   HotelSearch/.ensime_lucene/_2.nrm
+#	new file:   HotelSearch/.ensime_lucene/_2.prx
+#	new file:   HotelSearch/.ensime_lucene/_2.tii
+#	new file:   HotelSearch/.ensime_lucene/_2.tis
+#	new file:   HotelSearch/.ensime_lucene/_2_1.del
+#	new file:   HotelSearch/.ensime_lucene/_3.fdt
+#	new file:   HotelSearch/.ensime_lucene/_3.fdx
+#	new file:   HotelSearch/.ensime_lucene/_3.fnm
+#	new file:   HotelSearch/.ensime_lucene/_3.frq
+#	new file:   HotelSearch/.ensime_lucene/_3.nrm
+#	new file:   HotelSearch/.ensime_lucene/_3.prx
+#	new file:   HotelSearch/.ensime_lucene/_3.tii
+#	new file:   HotelSearch/.ensime_lucene/_3.tis
+#	new file:   HotelSearch/.ensime_lucene/_3_1.del
+#	new file:   HotelSearch/.ensime_lucene/_4.fdt
+#	new file:   HotelSearch/.ensime_lucene/_4.fdx
+#	new file:   HotelSearch/.ensime_lucene/_4.fnm
+#	new file:   HotelSearch/.ensime_lucene/_4.frq
+#	new file:   HotelSearch/.ensime_lucene/_4.nrm
+#	new file:   HotelSearch/.ensime_lucene/_4.prx
+#	new file:   HotelSearch/.ensime_lucene/_4.tii
+#	new file:   HotelSearch/.ensime_lucene/_4.tis
+#	new file:   HotelSearch/.ensime_lucene/_5.fdt
+#	new file:   HotelSearch/.ensime_lucene/_5.fdx
+#	new file:   HotelSearch/.ensime_lucene/_5.fnm
+#	new file:   HotelSearch/.ensime_lucene/_5.frq
+#	new file:   HotelSearch/.ensime_lucene/_5.nrm
+#	new file:   HotelSearch/.ensime_lucene/_5.prx
+#	new file:   HotelSearch/.ensime_lucene/_5.tii
+#	new file:   HotelSearch/.ensime_lucene/_5.tis
+#	new file:   HotelSearch/.ensime_lucene/_7.cfs
+#	new file:   HotelSearch/.ensime_lucene/_7.fdt
+#	new file:   HotelSearch/.ensime_lucene/_7.fdx
+#	new file:   HotelSearch/.ensime_lucene/_7_1.del
+#	new file:   HotelSearch/.ensime_lucene/_8.fdt
+#	new file:   HotelSearch/.ensime_lucene/_8.fdx
+#	new file:   HotelSearch/.ensime_lucene/segments.gen
+#	new file:   HotelSearch/.ensime_lucene/segments_3
+#	new file:   HotelSearch/.ensime_lucene/write.lock
+#	modified:   HotelSearch/HotelSearch.sublime-project
+#	modified:   HotelSearch/HotelSearch.sublime-workspace
+#	modified:   HotelSearch/app/models/CreateBooking.scala
+#	modified:   HotelSearch/project/plugins.sbt
+#
+
