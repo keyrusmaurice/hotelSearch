@@ -16,8 +16,7 @@ object Constants {
   val UserName = "OITHOT"
   val Password = "OITHOT"
   val AgentCode = "OITHOT"
-  val url = ""
-
+  val url = "http://r5.ek.aero/aaconnector/AAconnector.asmx/AAConnector"
 }
 
 object Salutation extends Enumeration {
