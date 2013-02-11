@@ -111,6 +111,5 @@ class ResponseCreateBooking(xmlString: String) extends Response(xmlString) {
   val bookingStatus = (booking \ "BookingmStatus").text
   val passengerList = PassengerList.fromXml((booking \\ "PassengerList").head)
   val hotelList = HotelBookList.fromXml((booking \\ "HotelList").head)
-  val transfer = TransferToHotel.fromXml((booking \\ "TransferList").head)
-  println(transfer.transferTypeName)
+  val transfer = TransferToHotel.fromXml((booking \\ "TransferList").head)  
 }

@@ -6,7 +6,8 @@ import TypePassager._
 import Salutation._
 
 class RequestCreateBooking(sessionID: String, clientReference: String, currency: String = "USD",
-  passengerList: PassengerList, hotelBookList: HotelBookList) {
+  passengerList: PassengerList, hotelBookList: HotelBookList) extends Request {
+
   private val xml =
     <Request>
       <Function></Function>
@@ -20,5 +21,7 @@ class RequestCreateBooking(sessionID: String, clientReference: String, currency:
         { hotelBookList.toXml }
       </RequestDetails>
     </Request>
+
+  override def toString = xml.toString 
 }
 
