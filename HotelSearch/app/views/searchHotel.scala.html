@@ -1,0 +1,59 @@
+@(result : ResponseHotelAvailability)
+
+@displayCurrency() = { 
+  @if(result.currency == "USD"){ $ }
+}
+
+<script type="text/javascript">  
+        $(document).ready(function(){
+            $("#report tr:odd").addClass("odd");
+            $("#report tr:not(.odd)").hide();
+            $("#report tr:first-child").show();
+            
+            $("#report tr.odd").click(function(){
+                $(this).next("tr").toggle();
+                $(this).find(".arrow").toggleClass("up");
+            });
+            //$("#report").jExpand();
+        });
+    </script>
+
+<table id="report">
+        <tr>
+            <th>Hotel Name</th>
+            <th>Category Code</th>
+            <th>categoryName</th>
+            <th>Hotel Remarks</th>
+            <th>Cancellation Policy</th>
+           
+            <th></th>
+        </tr>
+        @for(h <- result.hotels) {
+        <tr>
+            <td>@h.hotelName</td>
+            <td>@h.categoryCode</td>
+            <td>@h.categoryName</td>
+            <td>@h.hotelRemarks</td>  
+            <td>@h.cancellationPolicy</td>                   
+            <td><div class="arrow"></div></td>
+        </tr>
+        <tr>
+            <td colspan="6">              
+                <h4>Room information</h4>
+                <ul>
+                     @for(r <- h.rooms) {
+                        <li> @r.name <br />
+                          Prices
+                          <ul>
+                            @for(p <- r.priceList) {
+                              <li>meal plan @p.mealPlan - rate per night @p.ratePerNight @displayCurrency()</li>
+                            }
+                          </ul>
+                       </li> }
+                 </ul>   
+            </td>
+        </tr>
+        }
+        
+        
+</table>

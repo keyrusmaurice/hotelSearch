@@ -47,8 +47,8 @@ class ResponseHotelAvailability(xmlString : String) extends Response(xmlString) 
   val environment = env.text
   
   private val checkHotelAvailability = xml \ "CheckHotelAvailability"
-
   private val serviceDateRange = checkHotelAvailability \ "ServiceDateRange"
+ 
   val checkin = Constants.dateFormat.parse( (serviceDateRange \\ "@CheckIn").text)
   val checkout = Constants.dateFormat.parse( (serviceDateRange \\ "@CheckIn").text)
   
@@ -93,9 +93,10 @@ class Room(xml : scala.xml.Node) extends XmlResponse(xml) {
   private val roomPriceList = (xml \ "RoomPriceList" \ "Price").toList
   val priceList = roomPriceList.map(new RoomPriceList(_))
 
-  val extras = (xml \ "Extras").toList.head
-
-  val (roomExtra, roomExtraCharges) = if ((extras \ "Extra").toList != Nil) {
+  val extras = if ((xml \ "Extras").toList == Nil ) Nil else (xml \ "Extras").toList.head
+  
+  val (roomExtra, roomExtraCharges) = if (extras == Nil) (null,null)
+  else if ((extras \ "Extra").toList != Nil) {
     val roomExtra_ = new RoomExtra((extras \ "Extra").toList.head) 
     val roomExtraCharges_ = new RoomExtraCharges((extras \ "ExtraCharges").toList.head) 
     (roomExtra_, roomExtraCharges_)    
@@ -122,8 +123,8 @@ class SplitOffer(xml : scala.xml.Node) extends XmlResponse(xml) {
 class RoomPriceList(xml : scala.xml.Node) extends XmlResponse(xml) {  
   val mealPlan = (xml \\ "@MealPlan").text
   val ratePerNight = (xml \\ "@RatePerNight").text
-  val totalAmount = (xml \\ "@TotalAmount").text.toInt
-  val tax = (xml \\ "@Tax").text.toInt
+  val totalAmount = (xml \\ "@TotalAmount").text.toFloat
+  val tax = (xml \\ "@Tax").text.toFloat
 }
 
 class RoomExtra(xml : scala.xml.Node) extends XmlResponse(xml) {  

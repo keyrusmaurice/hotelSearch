@@ -1,0 +1,50 @@
+@(message: String)
+@import org.joda.time.DateTime
+
+@scripts = {
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/jexpand.css")">
+    <script type="text/javascript">
+    $(function() {
+      $( "#checkIN" ).datepicker();
+      $( "#checkIN" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+      $( "#checkIN" ).datepicker( "setDate", "@{DateTime.now.plusDays(2).toString("yyyy-MM-dd")}" );
+
+      $( "#checkOUT" ).datepicker();
+      $( "#checkOUT" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+      $( "#checkOUT" ).datepicker( "setDate", "@{DateTime.now.plusDays(3).toString("yyyy-MM-dd")}" );
+
+      $('#searchHotel').submit(function() {
+        var checkIndata = $( "#checkIN" ).val();
+        var checkOUTdata = $( "#checkOUT" ).val();
+        $.ajax({
+          type: "POST",
+          url: "/searchHotel",
+          data: { checkIN:checkIndata , checkOUT: checkOUTdata, adults : 1 }
+          }).done(function( msg ) {
+            $("#resultSearch").html(msg)
+        })
+        return false;
+      });
+    });
+    </script>    
+}
+
+@main("Hotel Search",scripts) {
+
+  <form action = "@routes.Application.searchHotel()" id="searchHotel" />
+    <table width="200" align="center">
+    <tr>
+      <td>checkIN <input type="text"  name="checkIN"  id="checkIN"  readonly="true"/></td>
+      <td>checkOUT <input type="text" name="checkOUT" id="checkOUT" readonly="true"/></td>
+    </tr>
+    <tr>  
+      <td>Adults <input type="text" name="adults" /></td>
+      <td>Children <input type="text" name="children" /></td>
+    </tr>
+    <tr><td colspan="2"><input type="submit" value="Search"></td></tr> 
+    </table>
+  </form>
+  
+  <div id="resultSearch">
+  </div>  
+}
