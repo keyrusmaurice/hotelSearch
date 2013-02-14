@@ -69,16 +69,17 @@ object Application extends Controller {
       val adults = post.get("adults").head.toInt
       val children = post.get("children").head.toInt
       val units = post.get("units").head.toInt
-      val rha = new RequestHotelAvailability(sessionID, ci, co, hotelCityCode = hotelCity,adults=adults,children=children,units=units )
+      val hotelCode = post.get("hotelCode").head
+      val rha = new RequestHotelAvailability(sessionID, ci, co, hotelCityCode = hotelCity,adults=adults,children=children,units=units,hotelCode = hotelCode )
       var flag = true
       var result = ""
       do {
         result =  checkhotelavailabilityAction(rha)
         if (true) flag = false
       }while(flag)
-      println(result)
+     
       val resHa = new ResponseHotelAvailability(result)
-      Ok(views.html.getRoomAvailability(result)).withSession(request.session + ("sessionID" -> sessionID))
+      Ok(views.html.getRoomAvailability(resHa)).withSession(request.session + ("sessionID" -> sessionID))
   }
 
   def searchHotel = Action {   

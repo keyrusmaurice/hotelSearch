@@ -1,4 +1,8 @@
-@(result : String)
+@(result : ResponseHotelAvailability)
+
+@displayCurrency() = { 
+  @if(result.currency == "USD"){ $ }
+}
 
 <script type="text/javascript">  
   $(document).ready(function(){
@@ -6,6 +10,40 @@
   });// end of document ready
 </script>
 
+<table id="roomsAvailable" class="footable">
+    <thead>
+    <tr>
+        <th data-class="expand" data-sort-initial="true">Hotel Name</th>
+        <th data-hide="default,phone,tablet">Cancellation Policy</th>       
+        <th data-hide="default,phone,tablet">Room</th>
+        <th>Category Name</th>
+        <th>Min Rate</th>
+        <th>Max Rate</th>
+    </tr>
+    </thead>
+        @for(h <- result.hotels) {
+        <tr>
+            <td>@h.hotelName <input type="hidden" name="hotelCode" value="@h.hotelCode"></td>
+            <td>@h.cancellationPolicy</td>         
 
+            <td><h4>Room information</h4>
+                <ul>
+                     @for(r <- h.rooms) {
+                        <li> @r.name <br />
+                          Prices
+                          <ul>
+                            @for(p <- r.priceList) {
+                              <li>meal plan @p.mealPlan - rate per night @p.ratePerNight @displayCurrency()</li>
+                            }
+                          </ul>
+                       </li> }
+                 </ul>
+            </td>
+            <td>@h.categoryName</td>                                     
+            <td>@h.minRate</td>  
+            <td>@h.maxRate</td>
+        </tr>        
+        }
+</table>
 
 

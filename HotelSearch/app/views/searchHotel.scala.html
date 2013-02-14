@@ -16,11 +16,11 @@
         var adults = $( "#adults" ).val();
         var units = $( "#units" ).val();
         var hotelCode = $(this).attr("id")
-        $( "#accordion" ).accordion( "option", "active", 2 );
+        $( "#accordion" ).accordion( "option", "active", 1 );
         $.ajax({
           type: "POST",
           url: "/getRoomAvailability",
-          data: { checkIN:checkIndata, checkOUT: checkOUTdata, adults : adults, children:children ,hotelCityCode : hotelCityCode,units:units }
+          data: { checkIN:checkIndata, checkOUT: checkOUTdata, adults : adults, children:children ,hotelCityCode : hotelCityCode,units:units, hotelCode : hotelCode }
           }).done(function( msg ) {
             $("#roomAvailableResult").html(msg)
         })
