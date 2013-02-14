@@ -5,41 +5,57 @@
 }
 
 <script type="text/javascript">  
-        $(document).ready(function(){
-            $("#report tr:odd").addClass("odd");
-            $("#report tr:not(.odd)").hide();
-            $("#report tr:first-child").show();
-            
-            $("#report tr.odd").click(function(){
-                $(this).next("tr").toggle();
-                $(this).find(".arrow").toggleClass("up");
-            });
-            //$("#report").jExpand();
-        });
-    </script>
+  $(document).ready(function(){
+    $('#report').footable();
 
-<table id="report">
-        <tr>
-            <th>Hotel Name</th>
-            <th>Category Code</th>
-            <th>categoryName</th>
-            <th>Hotel Remarks</th>
-            <th>Cancellation Policy</th>
-           
-            <th></th>
-        </tr>
+    $(".chooseHotel").click(function() {
+        var checkIndata = $( "#checkIN" ).val();
+        var checkOUTdata = $( "#checkOUT" ).val();
+        var hotelCityCode = $( "#hotelCityCode" ).val();
+        var children = $( "#children" ).val();
+        var adults = $( "#adults" ).val();
+        var units = $( "#units" ).val();
+        var hotelCode = $(this).attr("id")
+        $( "#accordion" ).accordion( "option", "active", 2 );
+        $.ajax({
+          type: "POST",
+          url: "/getRoomAvailability",
+          data: { checkIN:checkIndata, checkOUT: checkOUTdata, adults : adults, children:children ,hotelCityCode : hotelCityCode,units:units }
+          }).done(function( msg ) {
+            $("#roomAvailableResult").html(msg)
+        })
+        return false;        
+    });
+   
+
+
+
+  });// end of document ready
+</script>
+
+<table id="report" class="footable">
+    <thead>
+    <tr>
+        <th data-class="expand" data-sort-initial="true">Hotel Name</th>
+        <th data-hide="default,phone,tablet">Cancellation Policy</th>
+        <th data-hide="default,phone,tablet">Hotel Amenities</th>        
+        <th data-hide="default,phone,tablet">Hotel Remarks</th>
+        <th data-hide="default,phone,tablet">Room</th>
+        <th>Category Name</th>
+        <th>Min Rate</th>
+        <th>Max Rate</th>
+        <th>Is Room Avilable</th>
+
+    </tr>
+    </thead>
         @for(h <- result.hotels) {
         <tr>
-            <td>@h.hotelName</td>
-            <td>@h.categoryCode</td>
-            <td>@h.categoryName</td>
-            <td>@h.hotelRemarks</td>  
-            <td>@h.cancellationPolicy</td>                   
-            <td><div class="arrow"></div></td>
-        </tr>
-        <tr>
-            <td colspan="6">              
-                <h4>Room information</h4>
+            <td>@h.hotelName <input type="hidden" name="hotelCode" value="@h.hotelCode"></td>
+            <td>@h.cancellationPolicy</td>
+            <td>@h.hotelAmenities</td>
+            <td>@h.hotelRemarks</td>
+
+            <td><h4>Room information</h4>
                 <ul>
                      @for(r <- h.rooms) {
                         <li> @r.name <br />
@@ -50,10 +66,15 @@
                             }
                           </ul>
                        </li> }
-                 </ul>   
+                 </ul>
             </td>
-        </tr>
+
+            <td>@h.categoryName</td>                                     
+            <td>@h.minRate</td>  
+            <td>@h.maxRate</td>
+            <td><a href="#" id="@h.hotelCode" class="chooseHotel" >Check availability</a><td>
+        </tr>        
         }
-        
-        
 </table>
+
+

@@ -1,8 +1,9 @@
 @(message: String)
 @import org.joda.time.DateTime
+@import models.Constants._
 
 @scripts = {
-    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/jexpand.css")">
+
     <script type="text/javascript">
     $(function() {
       $( "#checkIN" ).datepicker();
@@ -16,35 +17,109 @@
       $('#searchHotel').submit(function() {
         var checkIndata = $( "#checkIN" ).val();
         var checkOUTdata = $( "#checkOUT" ).val();
+        var hotelCityCode = $( "#hotelCityCode" ).val();
+        var children = $( "#children" ).val();
+        var adults = $( "#adults" ).val();
+        var units = $( "#units" ).val();
+
         $.ajax({
           type: "POST",
           url: "/searchHotel",
-          data: { checkIN:checkIndata , checkOUT: checkOUTdata, adults : 1 }
+          data: { checkIN:checkIndata, checkOUT: checkOUTdata, adults : adults, children:children ,hotelCityCode : hotelCityCode,units:units }
           }).done(function( msg ) {
             $("#resultSearch").html(msg)
         })
         return false;
       });
-    });
-    </script>    
+
+      var spinnerAdults = $( "#adults" ).spinner({ min: 1, max: 5});
+      var spinnerChildren = $( "#children" ).spinner({ min: 0, max: 5});
+      var spinnerUnits = $( "#units" ).spinner({ min: 1, max: 3});
+       $( "#accordion" ).accordion();
+
+
+    });//document ready
+    </script>
+        <style type="text/css">
+    .footable tbody tr.zebra {
+      background:#2E64FE;
+    }
+  </style> 
+  <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/footable-0.1.css")">
+  <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/footable.sortable-0.1.css")">
+  <script src="@routes.Assets.at("javascripts/footable-0.1.js")"></script>
+  <script src="@routes.Assets.at("javascripts/footable.sortable.js")"></script>     
 }
 
 @main("Hotel Search",scripts) {
 
+<p>
   <form action = "@routes.Application.searchHotel()" id="searchHotel" />
     <table width="200" align="center">
     <tr>
-      <td>checkIN <input type="text"  name="checkIN"  id="checkIN"  readonly="true"/></td>
+      <td>checkIN <input type="text"  name="checkIN"  id="checkIN"  readonly="true" /></td>
       <td>checkOUT <input type="text" name="checkOUT" id="checkOUT" readonly="true"/></td>
     </tr>
     <tr>  
-      <td>Adults <input type="text" name="adults" /></td>
-      <td>Children <input type="text" name="children" /></td>
+      <td>Adults<input type="text" name="adults" id="adults" size="2" value="1" readonly="true" /></td>
+      <td >Children <input type="text" name="children" id="children" size="2" value="0" readonly="true" /></td>     
+    </tr>
+    <tr>
+      <td >
+    City <select id="hotelCityCode" name="hotelCityCode">
+       @for((k,v) <- hotelCityCodes) {
+          <option value="@v">@k</option>
+       }      
+    </select>
+      </td>
+       <td>No of rooms<input type="text" name="units" id="units" size="2" value="1" readonly="true" /></td>
     </tr>
     <tr><td colspan="2"><input type="submit" value="Search"></td></tr> 
     </table>
   </form>
-  
-  <div id="resultSearch">
-  </div>  
+</p>
+
+<div id="accordion">
+<h3>Search Hotels</h3>
+<div>
+<p>
+<div id="resultSearch">
+ </div>
+</p>
+</div>
+<h3>Room Avilable</h3>
+<div id="roomAvailableResult">
+</div>
+<h3>Section 3</h3>
+<div>
+<p>
+Nam enim risus, molestie et, porta ac, aliquam ac, risus. Quisque lobortis.
+Phasellus pellentesque purus in massa. Aenean in pede. Phasellus ac libero
+ac tellus pellentesque semper. Sed ac felis. Sed commodo, magna quis
+lacinia ornare, quam ante aliquam nisi, eu iaculis leo purus venenatis dui.
+</p>
+<ul>
+<li>List item one</li>
+<li>List item two</li>
+<li>List item three</li>
+</ul>
+</div>
+<h3>Section 4</h3>
+<div>
+<p>
+Cras dictum. Pellentesque habitant morbi tristique senectus et netus
+et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
+faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
+mauris vel est.
+</p>
+<p>
+Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
+Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
+inceptos himenaeos.
+</p>
+</div>
+</div>
+
+
+    
 }

@@ -58,23 +58,47 @@ object Application extends Controller {
        promise.await(200000)
        promise.value.get.body 
   }
-
-  def searchHotel = Action {   
+ 
+  def getRoomAvailability = Action {
     request =>
       val sessionID = getSession(request)
       val post = request.body.asFormUrlEncoded
       val ci = dateFormat.parse(post.get("checkIN").head)
-      //val ci = maybeCi map { dateFormat.parse(_)} getOrElse dateFormat.parse("2013-02-10")
-      //val maybeCout = request.body.get("checkOUT")
-      //val co =  maybeCout map { dateFormat.parse(_)} getOrElse dateFormat.parse("2013-02-10")
       val co = dateFormat.parse(post.get("checkOUT").head)
-      val rha = new RequestHotelAvailability(sessionID, ci, co, hotelCityCode = Constants.hotelCityCodes("Dubai"))
+      val hotelCity = post.get("hotelCityCode").head
+      val adults = post.get("adults").head.toInt
+      val children = post.get("children").head.toInt
+      val units = post.get("units").head.toInt
+      val rha = new RequestHotelAvailability(sessionID, ci, co, hotelCityCode = hotelCity,adults=adults,children=children,units=units )
       var flag = true
       var result = ""
       do {
         result =  checkhotelavailabilityAction(rha)
         if (true) flag = false
       }while(flag)
+      println(result)
+      val resHa = new ResponseHotelAvailability(result)
+      Ok(views.html.getRoomAvailability(result)).withSession(request.session + ("sessionID" -> sessionID))
+  }
+
+  def searchHotel = Action {   
+    request =>
+      val sessionID = getSession(request)
+      val post = request.body.asFormUrlEncoded
+      val ci = dateFormat.parse(post.get("checkIN").head)
+      val co = dateFormat.parse(post.get("checkOUT").head)
+      val hotelCity = post.get("hotelCityCode").head
+      val adults = post.get("adults").head.toInt
+      val children = post.get("children").head.toInt
+      val units = post.get("units").head.toInt
+      val rha = new RequestHotelAvailability(sessionID, ci, co, hotelCityCode = hotelCity,adults=adults,children=children,units=units )
+      var flag = true
+      var result = ""
+      do {
+        result =  checkhotelavailabilityAction(rha)
+        if (true) flag = false
+      }while(flag)
+      println(result)
       val resHa = new ResponseHotelAvailability(result)
       Ok(views.html.searchHotel(resHa)).withSession(request.session + ("sessionID" -> sessionID))
   }
@@ -93,7 +117,7 @@ object Application extends Controller {
     Ok(views.html.index(str))
     
     //render
-    val test = TestGetProductContent.y.products.head.images.head
+    val test = TestGetProductContent.y.products.head.images-jquery-ui.head
     val byteArray = test.decoded  
     Ok(byteArray).as("image/jpeg")
   */
