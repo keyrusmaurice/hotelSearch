@@ -5,11 +5,11 @@ import java.io.FileOutputStream
 
 object Utils{
 
-   def generateImage(filename : String, imageDataString : String) = {
-      val imageByteArray = decodeImage(imageDataString)
+   def generateImage(filename : String, imageData : Array[Byte]) = {
+      //val imageByteArray = decodeImage(imageDataString)
       // Write a image byte array into file system
       val imageOutFile = new FileOutputStream(filename)
-      imageOutFile.write(imageByteArray)
+      imageOutFile.write(imageData)
       imageOutFile.close
    }
 

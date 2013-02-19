@@ -4,6 +4,16 @@
   @if(result.currency == "USD"){ $ }
 }
 
+<script language="javascript" type="text/javascript">
+<!--
+function popitup(url) {
+  newwindow=window.open(url,'name','height=200,width=150');
+  if (window.focus) {newwindow.focus()}
+  return false;
+}
+// -->
+</script>
+
 <script type="text/javascript">  
   $(document).ready(function(){
     $('#report').footable();
@@ -15,19 +25,31 @@
         var children = $( "#children" ).val();
         var adults = $( "#adults" ).val();
         var units = $( "#units" ).val();
-        var hotelCode = $(this).attr("id")
-        $( "#accordion" ).accordion( "option", "active", 1 );
+        var hotelCode = $(this).attr("id")      
         $.ajax({
           type: "POST",
           url: "/getRoomAvailability",
           data: { checkIN:checkIndata, checkOUT: checkOUTdata, adults : adults, children:children ,hotelCityCode : hotelCityCode,units:units, hotelCode : hotelCode }
           }).done(function( msg ) {
+            $( "#accordion" ).accordion( "option", "active", 1 )
             $("#roomAvailableResult").html(msg)
         })
         return false;        
     });
-   
 
+      $(".hotelDetails").click(function() {
+        var hotelCode = $(this).attr("id");
+        $.ajax({
+          type: "POST",
+          url: "/getHotelDetails",
+          data: { hotelCode:hotelCode }
+          }).done(function( msg ) {
+            $( "#accordion" ).accordion( "option", "active", 2 )
+            $("#productDetails").html(msg)
+            
+        })
+        return false;
+      })
 
 
   });// end of document ready
@@ -45,7 +67,7 @@
         <th>Min Rate</th>
         <th>Max Rate</th>
         <th>Is Room Avilable</th>
-
+        <th>Hotel Details</th>
     </tr>
     </thead>
         @for(h <- result.hotels) {
@@ -72,7 +94,8 @@
             <td>@h.categoryName</td>                                     
             <td>@h.minRate</td>  
             <td>@h.maxRate</td>
-            <td><a href="#" id="@h.hotelCode" class="chooseHotel" >Check availability</a><td>
+            <td><a href="#" id="@h.hotelCode" class="chooseHotel" >Check availability</a></td>
+            <td><a href="#" id="@h.hotelCode" class="hotelDetails" >Details</a></td>
         </tr>        
         }
 </table>

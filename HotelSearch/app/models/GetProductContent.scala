@@ -3,8 +3,8 @@ package models
 import scala.xml._
 import java.util.Date
 
-class RequestGetProductContent( sessionID : String, productType : String,
-                                productCode : String = "USD", startIndex : Int
+class RequestGetProductContent( sessionID : String, productType : String = "H",
+                                productCode : String = "ALL", startIndex : Int = 1
                            ) extends Request {
   private val xml =
     <Request>
@@ -20,11 +20,6 @@ class RequestGetProductContent( sessionID : String, productType : String,
   override def toString = xml.toString 
 }
 
-
-object TestGetProductContent{
-  val x = <Response> <Products> <MoreProducts>FALSE</MoreProducts> <ProductEndIndex>1</ProductEndIndex> <Product> <Code>DXA173</Code> <Type>H</Type> <Address> Dubai Marina P. O. Box 32923, Dubai, UAE </Address> <Phone>+971 4 4367777</Phone> <Latitude>55.14</Latitude> <Longitude>25.08</Longitude> <Description><![CDATA[The Address Dubai Marina Accommodation Code: DXA173 Situated on its own 800-metre, private beach on Dubai’s Palm Island, the 5-star Atlantis offers stunning views of the Arabian Gulf. It provides an underwater aquarium, dolphin-swimming opportunities and an extensive water park. Arabian décor and large beds are fitted in all rooms. The balcony in each offers a panoramic view of the city or the Arabic Sea. Every room is equipped with a flat-screen satellite TV. Fine dining restaurants include Mediterranean, Italian and French. The award-winning Nobu restaurant serves contemporary Japanese food. Atlantis The Palm Dubai includes an underwater labyrinth and the largest water park in the Middle East with near-vertical slides and torrent rivers. The expansive pool is surrounded by lounge chairs and palm trees. A comprehensive spa provides facial and body treatments and the gym provides personal fitness coaches. The Emirates Golf Club is 3 km away and The Dubai Mall is a 20-minute drive away from the Atlantis.]]></Description> <Images> <Image Type="JPG">/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBAP/9kA</Image> </Images> </Product> </Products> </Response>  
-  val y = new ResponseGetProductContent(x.toString) 
-}
 
 class ResponseGetProductContent(xmlString :String) extends Response(xmlString) {   
   private val productsTag = xml \ "Products"  

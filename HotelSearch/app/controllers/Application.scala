@@ -52,11 +52,38 @@ object Application extends Controller {
       }
   }
 
-  def checkhotelavailabilityAction(rha : RequestHotelAvailability )  = {       
-       println(rha)
+  def checkhotelavailabilityAction(rha : RequestHotelAvailability )  = {             
        val promise = WS.url(url).post(Map("RequestXML" -> Seq(rha.toString)))
        promise.await(200000)
        promise.value.get.body 
+  }
+
+
+  def getHotelDetailsRequest(rgpc : RequestGetProductContent )  = {             
+       val promise = WS.url(url).post(Map("RequestXML" -> Seq(rgpc.toString)))
+       promise.await(200000)
+       promise.value.get.body 
+  }
+
+  def getHotelDetails = Action {
+    request =>
+      val sessionID = getSession(request)
+      val post = request.body.asFormUrlEncoded
+      val hotelCode = post.get("hotelCode").head
+      val rgpc = new RequestGetProductContent(sessionID, productCode = hotelCode)
+      var flag = true
+      var result = ""
+      do {
+        result =  getHotelDetailsRequest(rgpc)
+        if (true) flag = false
+      }while(flag)
+      val resHd = new ResponseGetProductContent(result)
+      var imageName = ""
+      for(products <- resHd.products;image <- products.images) {
+         Utils.generateImage("./public/images/hotels/" + products.code + "." + image.imageType, image.decoded)
+         imageName =  products.code + "." + image.imageType 
+      }
+      Ok(views.html.getHotelDetails(resHd,imageName)).withSession(request.session + ("sessionID" -> sessionID))
   }
  
   def getRoomAvailability = Action {
@@ -82,6 +109,10 @@ object Application extends Controller {
       Ok(views.html.getRoomAvailability(resHa)).withSession(request.session + ("sessionID" -> sessionID))
   }
 
+  def viewOnGMap(long : String, lat  : String, name : String) = Action {  request =>
+    Ok(views.html.viewOnGMap((long,lat,name)))
+  }
+
   def searchHotel = Action {   
     request =>
       val sessionID = getSession(request)
@@ -99,7 +130,7 @@ object Application extends Controller {
         result =  checkhotelavailabilityAction(rha)
         if (true) flag = false
       }while(flag)
-      println(result)
+      //println(result)
       val resHa = new ResponseHotelAvailability(result)
       Ok(views.html.searchHotel(resHa)).withSession(request.session + ("sessionID" -> sessionID))
   }

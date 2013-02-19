@@ -1,0 +1,14 @@
+@(result : ResponseGetProductContent, imageName : String)
+
+</script>   
+@for(p <- result.products) {
+    Description : <p>@p.description</p>
+    Address : @p.address <br />
+    Phone   : @p.phone<br />
+    <img src= '@routes.Assets.at("images/hotels/" + imageName )'>
+    <a href="#" onclick="popitup('/viewOnGMap?long=@p.longitude&lat=@p.latitude&name=@p.code')">check on google map</a>
+  }
+
+  
+
+ 
