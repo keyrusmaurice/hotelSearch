@@ -3,6 +3,8 @@ package models
 object Constants {
   import java.text.SimpleDateFormat
   val dateFormat = new SimpleDateFormat("yyyy-MM-dd")
+  val dateFormatJs = new SimpleDateFormat("yyyy/MM/dd")
+
   val hotelCityCodes = Map( "Dubai" -> "DXB",  "Abu Dhabi" -> "AUH",  "Sharjah" -> "SHG")
 
   val ratingCode = Map(

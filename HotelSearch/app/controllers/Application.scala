@@ -141,21 +141,42 @@ object Application extends Controller {
       Ok(views.html.searchHotelForm(sessionID)).withSession(request.session + ("sessionID" -> sessionID))
   }
 
-  /*
-   dummy code
-   val response = new ResponseCreateBooking(r.xml.toString)
-    val passengerList = response.passengerList
-    val str = passengerList.map(p => (p.firstName + " " + p.lastName)).mkString(",")   
-    Ok(views.html.index(str))
-    
-    //render
-    val test = TestGetProductContent.y.products.head.images-jquery-ui.head
-    val byteArray = test.decoded  
-    Ok(byteArray).as("image/jpeg")
-  */
+  def searchExcursionForm = Action {
+    request =>
+      val sessionID = getSession(request)
+      Ok(views.html.searchExcursionForm(sessionID)).withSession(request.session + ("sessionID" -> sessionID)) 
+  }
 
-  /*def render2 = Action {
-   
-  }*/
+
+  def searchExcursion = Action {   
+    request =>
+      val sessionID = getSession(request)
+      val post = request.body.asFormUrlEncoded
+      val ci = dateFormat.parse(post.get("checkIN").head)
+      val co = dateFormat.parse(post.get("checkOUT").head)
+      val hotelCity = post.get("hotelCityCode").head
+      val adults = post.get("adults").head.toInt
+      val children = post.get("children").head.toInt
+      val rea = new RequestCheckExcursionAvailability(sessionID, city = hotelCity,startDate = ci, co, adults=adults,children=children)
+      var flag = true
+      var result = ""
+
+      do {
+        result =  checkExcurionAvailabilityAction(rea)
+        println(result)
+        if (true) flag = false
+      }while(flag)
+      //println(result)
+      val resEa = new ResponseCheckExcursionAvailability(result)
+      Ok(views.html.searchExcursion(resEa)).withSession(request.session + ("sessionID" -> sessionID))
+  }
+
+  def checkExcurionAvailabilityAction(rea : RequestCheckExcursionAvailability )  = {             
+       println(rea.toString)
+       val promise = WS.url(url).post(Map("RequestXML" -> Seq(rea.toString)))
+       promise.await(200000)
+       promise.value.get.body
+  }
+  
 
 }

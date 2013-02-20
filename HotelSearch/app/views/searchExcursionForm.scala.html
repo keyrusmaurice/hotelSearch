@@ -1,0 +1,84 @@
+@(message: String)
+@import org.joda.time.DateTime
+@import models.Constants._
+
+@scripts = {
+
+    <script type="text/javascript">
+    $(function() {
+      $( "#checkIN" ).datepicker();
+      $( "#checkIN" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+      $( "#checkIN" ).datepicker( "setDate", "@{DateTime.now.plusDays(2).toString("yyyy-MM-dd")}" );
+
+      $( "#checkOUT" ).datepicker();
+      $( "#checkOUT" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+      $( "#checkOUT" ).datepicker( "setDate", "@{DateTime.now.plusDays(3).toString("yyyy-MM-dd")}" );
+
+      $('#searchExcursionForm').submit(function() {
+        var checkIndata = $( "#checkIN" ).val();
+        var checkOUTdata = $( "#checkOUT" ).val();
+        var hotelCityCode = $( "#hotelCityCode" ).val();
+        var children = $( "#children" ).val();
+        var adults = $( "#adults" ).val();
+        var units = $( "#units" ).val();
+
+        $.ajax({
+          type: "POST",
+          url: "/searchExcursion",
+          data: { checkIN:checkIndata, checkOUT: checkOUTdata, adults : adults, children:children,
+                  hotelCityCode : hotelCityCode }
+          }).done(function( msg ) {
+            $("#resultSearch").html(msg)
+        })
+        return false;
+      });
+
+      var spinnerAdults = $( "#adults" ).spinner({ min: 1, max: 5});
+      var spinnerChildren = $( "#children" ).spinner({ min: 0, max: 5});     
+
+    });//document ready
+    </script>
+        <style type="text/css">
+    .footable tbody tr.zebra {
+      background:#2E64FE;
+    }
+  </style> 
+  <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/footable-0.1.css")">
+  <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/footable.sortable-0.1.css")">
+
+  <script src="@routes.Assets.at("javascripts/footable-0.1.js")"></script>
+  <script src="@routes.Assets.at("javascripts/footable.sortable.js")"></script>
+  <script src="@routes.Assets.at("javascripts/fullcalendar.min.js")"></script>
+  <link rel='stylesheet' type='text/css' href='@routes.Assets.at("stylesheets/fullcalendar.css")' />
+  <link rel='stylesheet' type='text/css' href='@routes.Assets.at("stylesheets/fullcalendar.print.css")' media='print' />  
+}
+
+@main("Hotel Search",scripts) {
+
+<p>
+  <form action = "@routes.Application.searchExcursion()" id="searchExcursionForm" />
+    <table width="200" align="center">
+    <tr>
+      <td>checkIN <input type="text"  name="checkIN"  id="checkIN"  readonly="true" /></td>
+      <td>checkOUT <input type="text" name="checkOUT" id="checkOUT" readonly="true"/></td>
+    </tr>
+    <tr>  
+      <td>Adults<input type="text" name="adults" id="adults" size="2" value="1" readonly="true" /></td>
+      <td >Children <input type="text" name="children" id="children" size="2" value="0" readonly="true" /></td>     
+    </tr>
+    <tr>
+      <td >
+    City <select id="hotelCityCode" name="hotelCityCode">
+       @for((k,v) <- hotelCityCodes) {
+          <option value="@v">@k</option>
+       }      
+    </select>
+      </td>       
+    </tr>
+    <tr><td colspan="2"><input type="submit" value="Search"></td></tr> 
+    </table>
+  </form>
+</p>
+
+<div id="resultSearch"></div>
+}

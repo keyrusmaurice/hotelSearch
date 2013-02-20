@@ -1,0 +1,78 @@
+@(result : ResponseCheckExcursionAvailability)
+
+
+<script type="text/javascript">  
+  $(document).ready(function(){
+    $('#report').footable();
+
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+    
+    $('#calendar').fullCalendar({
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'basicWeek,basicDay'
+      },
+      defaultView: 'basicWeek',
+      editable: false,
+      events: [        
+        @for(excusion <- result.excusions){ 
+          @for(avail <- excusion.availability) {
+            @if(avail.available.toUpperCase == "Y"){
+              {
+              title : '@excusion.name @@ @avail.amount ' ,
+              start: new Date('@Constants.dateFormatJs.format(avail.date)')
+              },
+            }                       
+          }
+        }
+
+        {
+          
+        }
+      ]
+    });
+    $('#calendar').fullCalendar('option', 'contentHeight', 250);
+
+  });// end of document ready
+</script>
+<style type='text/css'>
+  #calendar {
+    width: 900px;
+    margin: 0 auto;
+    }
+
+</style>
+
+<table id="report" class="footable">
+    <thead>
+    <tr>
+        <th data-class="expand" data-sort-initial="true">Name</th>
+        <th data-hide="default,phone,tablet">Code</th>       
+        <th data-hide="default,phone,tablet">Remarks</th>
+        <th data-hide="default,phone,tablet">Availability</th>
+       
+    </tr>
+    </thead>
+        @for(excusion <- result.excusions) {
+        <tr>
+            <td>@excusion.name <input type="hidden" name="exCode" value="@excusion.code"></td>
+            <td>@excusion.code</td>
+            <td>@excusion.remarks</td>
+            <td>
+                <ul>
+                     @for(avail <- excusion.availability) {
+                        <li> @avail.date <br /></li>
+                        <li> @avail.available <br /></li>
+                        <li> @avail.amount <br /></li>
+                      }
+                 </ul>
+            </td>
+        </tr>        
+        }
+</table>
+
+<div id='calendar'></div>
