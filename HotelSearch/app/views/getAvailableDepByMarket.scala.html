@@ -1,0 +1,56 @@
+@(result : List[models.Deps])
+
+<script type="text/javascript">  
+  $(document).ready(function(){
+     $('#getZones').click(function() {       
+        var label = $( "#label" ).val();
+        var dateFromData = $( "#dateFrom" ).val();
+        var dateToData = $( "#dateTo" ).val();
+        $("#zones").html("loading data...")
+        $.ajax({
+          type: "POST",
+          url: "/getPopulatedZonesForIata",
+          data: {dateFrom:dateFromData, dateTo: dateToData, label : label }
+          }).done(function( msg ) {
+            $("#zones").html(msg)
+        })
+        return false;
+      });
+
+      $('#getBestPricesByCityIata').click(function() {       
+        var label = $( "#label" ).val();
+        var dateFromData = $( "#dateFrom" ).val();
+        var dateToData = $( "#dateTo" ).val();
+        if (typeof filterZone === 'undefined') {
+           filterZone = -1
+        }
+        $("#bestPricesResult").html("loading data...")
+        $.ajax({
+          type: "POST",
+          url: "/getBestPricesByCityIata",
+          data: {dateFrom:dateFromData, dateTo: dateToData, label : label, filterzone : filterZone }
+          }).done(function( msg ) {
+            $("#bestPricesResult").html(msg)
+        })
+        return false;
+      });
+       
+  });// end of document ready
+</script>
+<form action = "@routes.Application.getPopulatedZonesForIata()" id="getPopulatedZonesForIata"  >
+<table >
+   <tr>
+     <td>Ville de depart</td>
+     <td>
+       <select id="label" name="label">
+          @for(item <- result) {
+           <option value="@item.iata" >@item.label</option>   
+            }
+       </select>
+     </td>
+     <tr>
+     <td><input type="button" value="Get Best Prices" id="getBestPricesByCityIata"></td>
+     </tr>
+   </tr>        
+</table>
+</form>

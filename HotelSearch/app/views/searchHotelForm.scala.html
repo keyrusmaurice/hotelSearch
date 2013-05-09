@@ -5,6 +5,7 @@
 @scripts = {
 
     <script type="text/javascript">
+
     $(function() {
       $( "#checkIN" ).datepicker();
       $( "#checkIN" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
@@ -21,7 +22,8 @@
         var children = $( "#children" ).val();
         var adults = $( "#adults" ).val();
         var units = $( "#units" ).val();
-
+        
+        $("#resultSearch").html("Search in progress, please wait....")
         $.ajax({
           type: "POST",
           url: "/searchHotel",
@@ -32,12 +34,12 @@
         return false;
       });
 
+
+
       var spinnerAdults = $( "#adults" ).spinner({ min: 1, max: 5});
       var spinnerChildren = $( "#children" ).spinner({ min: 0, max: 5});
       var spinnerUnits = $( "#units" ).spinner({ min: 1, max: 3});
-       $( "#accordion" ).accordion();
-
-
+      
     });//document ready
     </script>
         <style type="text/css">
@@ -54,7 +56,7 @@
 @main("Hotel Search",scripts) {
 
 <p>
-  <form action = "@routes.Application.searchHotel()" id="searchHotel" />
+  <form action = "@routes.Application.searchHotel()" id="searchHotel" >
     <table width="200" align="center">
     <tr>
       <td>checkIN <input type="text"  name="checkIN"  id="checkIN"  readonly="true" /></td>
@@ -79,33 +81,6 @@
   </form>
 </p>
 
-<div id="accordion">
-<h3>Search Hotels</h3>
-<div>
-<p>
-<div id="resultSearch"></div>
-</p>
-</div>
-<h3>Rooms Available</h3>
-<div id="roomAvailableResult"></div>
-<h3>Details</h3>
-<div id="productDetails"></div>   
-<h3>Section 4</h3>
-<div>
-<p>
-Cras dictum. Pellentesque habitant morbi tristique senectus et netus
-et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in
-faucibus orci luctus et ultrices posuere cubilia Curae; Aenean lacinia
-mauris vel est.
-</p>
-<p>
-Suspendisse eu nisl. Nullam ut libero. Integer dignissim consequat lectus.
-Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
-inceptos himenaeos.
-</p>
-</div>
-</div>
 
-
-    
+<div id="resultSearch"></div>    
 }

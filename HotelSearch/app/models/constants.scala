@@ -2,9 +2,16 @@ package models
 
 object Constants {
   import java.text.SimpleDateFormat
+  import scala.xml._
+  import play.api.mvc.Results.Ok
+  import play.api.mvc.PlainResult
+
   val dateFormat = new SimpleDateFormat("yyyy-MM-dd")
   val dateFormatJs = new SimpleDateFormat("yyyy/MM/dd")
+  val refreshDateFormat = new SimpleDateFormat("dd/MM/yyyy kk:mm:ss")
+  val refreshDateDisplayFormat = new SimpleDateFormat("dd/MM/yyyy, kk:mm:ss")
 
+  val flightDateFormat = new SimpleDateFormat("dd/MM/yyyy")
   val hotelCityCodes = Map( "Dubai" -> "DXB",  "Abu Dhabi" -> "AUH",  "Sharjah" -> "SHG")
 
   val ratingCode = Map(
@@ -19,6 +26,32 @@ object Constants {
   val Password = "OITHOT"
   val AgentCode = "OITHOT"
   val url = "http://r5.ek.aero/aaconnector/AAconnector.asmx/AAConnector"
+  val goVoyagesModel = "http://xml.travelagency.travel/wspromosmodel.asmx"
+  val goVoyagesBest  = "http://xml.travelagency.travel/wsbestprices.asmx"
+
+  def swapMonth(input : String) : String = {
+     val arr = input.split("/")
+     val newArr =Array(arr(1),arr(0),arr(2))
+     newArr.mkString("/")
+  }
+
+  def isSessionError(xmlString : String ) : (Boolean,String) = {  
+    val xml = XML.loadString(xmlString)  
+    if  ( (xml \\ "Response" \\ "ErrorCode").text == "E") (true, (xml \\ "Response" \\ "ErrorMessage").text) else (false,"")
+  }
+
+  def chooseViewOutput(result : String, block : => PlainResult) = {
+    val (isError, errorMessage) = Constants.isSessionError(result)
+    if (isError){                
+       Ok(views.html.errorpage(errorMessage))
+    }
+    else
+    {
+        block
+    }
+
+  }
+
 }
 
 object Salutation extends Enumeration {

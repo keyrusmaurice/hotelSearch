@@ -1,0 +1,178 @@
+@(message: String)
+@import org.joda.time.DateTime
+@import models.Constants._
+
+@scripts = {
+
+    <script type="text/javascript">
+    //var filterZone = 512
+    var filterDes = "DXB";
+    $(function() {
+      $( "#checkIN" ).datepicker();
+      $( "#checkIN" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+      $( "#checkIN" ).datepicker( "setDate", "@{DateTime.now.plusDays(2).toString("yyyy-MM-dd")}" );
+
+      $( "#checkOUT" ).datepicker();
+      $( "#checkOUT" ).datepicker( "option", "dateFormat", "yy-mm-dd" );
+      $( "#checkOUT" ).datepicker( "setDate", "@{DateTime.now.plusDays(3).toString("yyyy-MM-dd")}" );
+      $("#search").hide()
+      $("#advance").hide()
+
+      function disableControl(flag){
+        var spinner = "enable";
+        if(flag){
+          spinner = "disable";
+        }
+        $( "#checkIN" ).prop('disabled', flag);
+        $( "#checkOUT" ).prop('disabled', flag);
+        $( "#hotelCityCode" ).prop('disabled', flag);
+        $( "#children" ).spinner(spinner);
+        $( "#adults" ).spinner(spinner);
+        $( "#units" ).prop('disabled', flag);
+        $("#marketCode").prop('disabled', flag);
+        $("#advance").prop('disabled', flag);
+        $("#search").prop('disabled', flag);        
+      }
+
+      function getDeps(){
+        disableControl(true);
+        var dateFromdata = $( "#checkIN" ).val();
+        var dateTodata = $( "#checkOUT" ).val();
+        var marketCode = $( "#marketCode" ).val();
+        $("#deps").html("loading data...")
+        $.ajax({
+          type: "POST",
+          url: "/getAvailableDep",
+          data: { dateFrom:dateFromdata, dateTo: dateTodata,marketCode : marketCode }
+          }).done(function( msg ) {
+            $("#deps").html(msg)
+            disableControl(false);
+        })
+        $("#search").show()
+        $("#advance").show()        
+      }
+
+      $("#getdeps").click(function(){
+        //getDeps();
+        //return false;
+      });
+
+      $("#marketCode").change(function(){
+        getDeps();
+      });
+
+      $('#checkIN').change(function() { 
+         getDeps();         
+      });
+
+      $('#checkOUT').change(function() { 
+         getDeps();         
+      });
+
+      $('#searchHotel').submit(function() {
+        var checkIndata = $( "#checkIN" ).val();
+        var checkOUTdata = $( "#checkOUT" ).val();
+        var hotelCityCode = $( "#hotelCityCode" ).val();
+        var children = $( "#children" ).val();
+        var adults = $( "#adults" ).val();
+        var units = $( "#units" ).val();
+        disableControl(true);
+
+        $("#resultSearch").html("Search in progress, please wait....")
+        $.ajax({
+          type: "POST",
+          url: "/searchHotel",
+          data: { checkIN:checkIndata, checkOUT: checkOUTdata, adults : adults, children:children ,hotelCityCode : hotelCityCode,units:units }
+          }).done(function( msg ) {
+            $("#resultSearch").html(msg)            
+        })
+
+        var label = $( "#label" ).val();       
+        if (typeof filterZone === 'undefined') {
+           filterZone = -1
+        }
+         if (typeof filterDes === 'undefined') {
+           filterDes = "";
+        }
+        $("#bestPricesResult").html("loading data...")
+        $.ajax({
+          type: "POST",
+          url: "/getBestPricesByCityIata",
+          data: {dateFrom:checkIndata, dateTo: checkOUTdata, label : label, filterzone : filterZone, filterDes : filterDes }
+          }).done(function( msg ) {
+            $("#bestPricesResult").html(msg)
+        })        
+
+        disableControl(false)
+        return false;
+      });
+
+      var spinnerAdults = $( "#adults" ).spinner({ min: 1, max: 5});
+      var spinnerChildren = $( "#children" ).spinner({ min: 0, max: 5});     
+
+    });//document ready
+    </script>
+        <style type="text/css">
+    .footable tbody tr.zebra {
+      background:#2E64FE;
+    }
+  </style> 
+  <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/footable-0.1.css")">
+  <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/footable.sortable-0.1.css")">
+
+  <script src="@routes.Assets.at("javascripts/footable-0.1.js")"></script>
+  <script src="@routes.Assets.at("javascripts/footable.sortable.js")"></script>
+  <script src="@routes.Assets.at("javascripts/fullcalendar.min.js")"></script>
+  <link rel='stylesheet' type='text/css' href='@routes.Assets.at("stylesheets/fullcalendar.css")' />
+  <link rel='stylesheet' type='text/css' href='@routes.Assets.at("stylesheets/fullcalendar.print.css")' media='print' />  
+}
+
+@main("Hotel Search",scripts) {
+
+<p>
+  <form action = "@routes.Application.searchHotel()" id="searchHotel" >
+    <table width="300" align="center">
+    <tr>
+      <td>checkIN <input type="text"  name="checkIN"  id="checkIN"  readonly="true" /></td>
+      <td>checkOUT <input type="text" name="checkOUT" id="checkOUT" readonly="true"/></td>
+    </tr>
+    <tr>  
+      <td>Adults<input type="text" name="adults" id="adults" size="2" value="1" readonly="true" /></td>
+      <td >Children <input type="text" name="children" id="children" size="2" value="0" readonly="true" /></td>     
+    </tr>
+    <tr>
+      <td >
+    City <select id="hotelCityCode" name="hotelCityCode">
+       @for((k,v) <- hotelCityCodes) {
+          <option value="@v">@k</option>
+       }      
+    </select>
+      </td>
+       <td>No of rooms<input type="text" name="units" id="units" size="2" value="1" readonly="true" /></td>
+    </tr>
+    <tr>
+      <td>
+         Country <select id="marketCode" name="marketCode">     
+          <option value="fr">fr</option>
+          <option value="es">es</option>
+          <option value="us">us</option>
+          <option value="de">de</option>
+          <option value="at">at</option>
+          <option value="be">be</option>
+          <option value="it">it</option>
+          <option value="pt">pt</option>      
+    </select>
+      </td>
+      <td>
+         <div id="deps"></div>
+      </td>
+    </tr>
+    <tr><td ><input type="button" id="advance" value="Advance"></td>
+        <td ><input type="submit" id="search" value="Search" ></td>
+    </tr> 
+    </table>
+  </form>
+</p>
+<div id='bestPricesResult'></div>
+<div id="resultSearch"></div>
+}

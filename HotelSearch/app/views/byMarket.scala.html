@@ -1,0 +1,86 @@
+@(message: String)
+@import org.joda.time.DateTime
+@import models.Constants._
+
+@scripts = {
+
+    <script type="text/javascript">
+    $(function() {
+      $( "#dateFrom" ).datepicker();
+      $( "#dateFrom" ).datepicker( "option", "dateFormat", "dd/mm/yy" );
+      $( "#dateFrom" ).datepicker( "setDate", "@{DateTime.now.plusDays(2).toString("dd/MM/yy")}" );
+
+      $( "#dateTo" ).datepicker();
+      $( "#dateTo" ).datepicker( "option", "dateFormat", "dd/mm/yy" );
+      $( "#dateTo" ).datepicker( "setDate", "@{DateTime.now.plusDays(3).toString("dd/MM/yy")}" );
+
+      /*$('#getAvailableDepByMarket').submit(function() {
+        var dateFromdata = $( "#dateFrom" ).val();
+        var dateTodata = $( "#dateTo" ).val();
+        var marketCode = $( "#marketCode" ).val();
+        $("#deps").html("loading data...")
+        $.ajax({
+          type: "POST",
+          url: "/getAvailableDepByMarket",
+          data: { dateFrom:dateFromdata, dateTo: dateTodata,marketCode : marketCode }
+          }).done(function( msg ) {
+            $("#deps").html(msg)
+        })
+        return false;
+      });*/
+
+      $('#submitMarketCode').click(function() {
+        var dateFromdata = $( "#dateFrom" ).val();
+        var dateTodata = $( "#dateTo" ).val();
+        var marketCode = $( "#marketCode" ).val();
+        $("#depCodeMessage").html("loading data...")
+        $.ajax({
+          type: "POST",
+          url: "/getAvailableDepByMarket",
+          data: { dateFrom:dateFromdata, dateTo: dateTodata,marketCode : marketCode }
+          }).done(function( msg ) {
+            $("#depCodeMessage").html(msg)
+            $("#bestPricesResult").html("")
+        })
+        return false;
+      });
+
+
+    });//document ready
+    </script> 
+}
+
+@main("Go Voyages",scripts) {
+
+<p>
+  <form action = "@routes.Application.getAvailableDepByMarket()" id="getAvailableDepByMarket" />
+    <table width="450px" align="center">
+    <tr>
+      <td>From <input type="text"  name="dateFrom"  id="dateFrom"  readonly="true" /></td>
+      <td>To <input type="text" name="dateTo" id="dateTo" readonly="true"/></td>
+    </tr>   
+    <tr>
+      <td>
+      <table>
+        <tr><td>Pays d'origine <select id="marketCode" name="marketCode">     
+          <option value="fr">France</option>
+          <option value="es">Espagne</option>
+          <option value="us">Etats-Unis</option>
+          <option value="de">Allemagne</option>
+          <option value="at">Autriche</option>
+          <option value="be">Belgique</option>
+          <option value="it">Italie</option>
+          <option value="pt">Portugal</option>      
+        </select></td></tr>
+        <tr><td><input id="submitMarketCode" type="button" value="Valider" /></td></tr>
+      </table>
+    
+      </td>
+      <td><div id="depCodeMessage"></div>
+      </td>      
+    </tr>    
+    </table>
+  </form>
+  <div id='bestPricesResult'></div>
+</p>
+}

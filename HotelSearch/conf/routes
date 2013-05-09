@@ -5,16 +5,21 @@
 # Home page
 GET     /                           controllers.Application.index
 #GET     /render2                   controllers.Application.render2
+GET     /goVoyages                  controllers.Application.byMarket
+POST    /getAvailableDepByMarket    controllers.Application.getAvailableDepByMarket
+POST    /getAvailableDep            controllers.Application.getAvailableDep
+POST    /getPopulatedZonesForIata   controllers.Application.getPopulatedZonesForIata
 GET     /checkhotelavailability     controllers.Application.checkhotelavailability
-POST    /getHotelDetails            controllers.Application.getHotelDetails 
+GET     /getHotelDetails            controllers.Application.getHotelDetails 
 GET     /clear                      controllers.Application.clear
 GET     /searchHotel                controllers.Application.searchHotelForm
+GET     /searchHotelGoVoyage        controllers.Application.searchHotelFormGoVoyage
 POST    /searchHotel                controllers.Application.searchHotel
 POST    /getRoomAvailability        controllers.Application.getRoomAvailability
 GET     /viewOnGMap                 controllers.Application.viewOnGMap(long: String ?= "", lat : String ?= "", name ?= "")
 GET     /searchExcursion            controllers.Application.searchExcursionForm
 POST    /searchExcursion            controllers.Application.searchExcursion
-
-
+GET     /getWsdl                    controllers.Application.getWsdl
+POST    /getBestPricesByCityIata    controllers.Application.getBestPricesByCityIata 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

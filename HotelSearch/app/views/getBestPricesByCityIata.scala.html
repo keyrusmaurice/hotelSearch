@@ -1,0 +1,37 @@
+@(groups :  scala.collection.immutable.Map[Int,List[Flight]], result : BestPricesByCityIata)
+@import models.Constants._
+@import models.BestPricesByCityIata._
+@import globals._
+
+<table id="bestpices" width="100%" align="center" >
+@for(key <- groups.keys.toList.sorted) {
+    <tr><td align="center"><font size="6" color="#ff0000">@zones(key)</font></td></tr>
+    <tr>
+        <td align="center" width="100%">
+        <table width="100%">            
+        <tr>          
+            <td align="center"><font size="3" color="#ff0000">Destination</font></td>
+            <td align="center"><font size="3" color="#ff0000">Date de Depart</font></td>      
+            <td align="center"><font size="3" color="#ff0000">Date de Retour</font></td>
+            <td align="center"><font size="3" color="#ff0000">Compagnie</font></td>
+            <td align="center"><font size="3" color="#ff0000">info tarifs</font></td>
+            <td align="center"><font size="3" color="#ff0000">A partir de</font></td>
+        </tr>
+        @for((flight,index) <- groups(key).zipWithIndex){
+        <tr style="background-color : @if((index + 1) % 2 == 0){#ffffff} else {#dddddd}">            
+            <td align="center">@if(destinations.isDefinedAt(flight.arptDest)) {@destinations(flight.arptDest)} else {@flight.arptDest}</td>
+            <td align="center">@flightDateFormat.format(flight.dateDeparture)</td>
+            <td align="center">@flightDateFormat.format(flight.dateReturn)</td>
+            <td align="center"><img src="http://www.travelagency.travel/img/Flights/@result.compagnies(flight.companyCode).fileName" />
+            </td>
+            <td align="center">Trouve le @refreshDateDisplayFormat.format(flight.refreshDate)</td>
+            <td align="left">@flight.adultPriceTTC &euro;</td>
+        </tr>
+        } 
+        </table> 
+        </td>
+    </tr>
+}
+</table>
+
+

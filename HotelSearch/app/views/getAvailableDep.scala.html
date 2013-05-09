@@ -1,0 +1,16 @@
+@(result : List[models.Deps])
+
+<table >
+   <tr>
+     <td>Ville de depart</td>
+    </tr>
+    <tr>
+     <td>
+       <select id="label" name="label">
+          @for(item <- result) {
+           <option value="@item.iata" >@item.label</option>   
+            }
+       </select>
+     </td>
+   </tr>        
+</table>

@@ -11,15 +11,31 @@ function popitup(url) {
   if (window.focus) {newwindow.focus()}
   return false;
 }
+/*
+function displayDetails(id){
+      $.ajax
+      ({
+        type: "POST",
+        url: "/getHotelDetails",
+        data: { hotelCode:id }
+        }).done(function( msg ) {         
+        $("#details_"+id).html(msg)            
+      });
+      alert("wer")
+      return false;
+    }
+*/
 // -->
 </script>
 
 <script type="text/javascript">  
   $(document).ready(function(){
-    $('#report').footable();
+    
+
+    $('#report').footable();    
 
     $(".chooseHotel").click(function() {
-        var checkIndata = $( "#checkIN" ).val();
+        /*var checkIndata = $( "#checkIN" ).val();
         var checkOUTdata = $( "#checkOUT" ).val();
         var hotelCityCode = $( "#hotelCityCode" ).val();
         var children = $( "#children" ).val();
@@ -33,26 +49,27 @@ function popitup(url) {
           }).done(function( msg ) {
             $( "#accordion" ).accordion( "option", "active", 1 )
             $("#roomAvailableResult").html(msg)
-        })
+        })*/
         return false;        
     });
 
-      $(".hotelDetails").click(function() {
-        var hotelCode = $(this).attr("id");
+    $('.hotelDetails').click(function() {
+        var hotelCode = $(this).attr("code");
+        //alert(hotelCode)
         $.ajax({
           type: "POST",
           url: "/getHotelDetails",
           data: { hotelCode:hotelCode }
           }).done(function( msg ) {
-            $( "#accordion" ).accordion( "option", "active", 2 )
-            $("#productDetails").html(msg)
+         
+          //$("#productDetails").html(msg)
             
         })
         return false;
       })
 
-
   });// end of document ready
+  
 </script>
 
 <table id="report" class="footable">
@@ -65,9 +82,7 @@ function popitup(url) {
         <th data-hide="default,phone,tablet">Room</th>
         <th>Category Name</th>
         <th>Min Rate</th>
-        <th>Max Rate</th>
-        <th>Is Room Avilable</th>
-        <th>Hotel Details</th>
+        <th>Max Rate</th>       
     </tr>
     </thead>
         @for(h <- result.hotels) {
@@ -89,13 +104,12 @@ function popitup(url) {
                           </ul>
                        </li> }
                  </ul>
+                 <a id="@h.hotelCode" href="#@h.hotelCode" onclick="popitup('/getHotelDetails?hotelCode=@h.hotelCode')" >Details</a>
+                 <!-- <a href="#" id="@h.hotelCode" class="chooseHotel" >Check availability</a> -->
             </td>
-
             <td>@h.categoryName</td>                                     
             <td>@h.minRate</td>  
-            <td>@h.maxRate</td>
-            <td><a href="#" id="@h.hotelCode" class="chooseHotel" >Check availability</a></td>
-            <td><a href="#" id="@h.hotelCode" class="hotelDetails" >Details</a></td>
+            <td>@h.maxRate</td>           
         </tr>        
         }
 </table>

@@ -1,0 +1,38 @@
+@(result : List[models.Zone])
+
+<script type="text/javascript">  
+  $(document).ready(function(){
+     $('#getPopulatedZonesForIata').submit(function() {       
+        var label = $( "#label" ).val();
+        var dateFromData = $( "#dateFrom" ).val();
+        var dateToData = $( "#dateTo" ).val();
+        $("#getByMarket").html("loading data...")
+        $.ajax({
+          type: "POST",
+          url: "/getPopulatedZonesForIata",
+          data: {dateFrom:dateFromData, dateTo: dateToData, label : label }
+          }).done(function( msg ) {
+            $("#zones").html(msg)
+        })
+        return false;
+      });
+       
+  });// end of document ready
+</script>
+<form action = "@routes.Application.getAvailableDepByMarket()" id="getPopulatedZonesForIata"  >
+<table >
+   <tr>
+     <td>Zone</td>
+     <td>
+       <select id="zone" name="zone">
+          @for(item <- result) {
+           <option value="@item.id" >@item.name</option>   
+            }
+       </select>
+     </td>
+     <td><input type="submit" value="Get Zones"></td>
+   </tr>        
+</table>
+</form>
+
+<div id='zones2'></div>

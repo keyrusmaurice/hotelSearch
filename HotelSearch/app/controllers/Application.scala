@@ -8,8 +8,107 @@ import play.api.libs.ws._
 import org.joda.time.DateTime
 
 object Application extends Controller {
+ 
+  def getWebserviceGetResult(url : String) : String = {
+    val promise =  WS.url(url).get     
+    promise.await(200000)
+    promise.value.get.body
+  }
 
-  private var newSession : String = ""
+  def getWebServicePostResult(url : String, map : Map[String,Seq[String]]) : String = {
+    val promise =  WS.url(url).post(map)     
+    promise.await(200000)
+    promise.value.get.body
+  }
+
+  def getWsdl = Action {
+    request =>    
+      val wsdl = getWebserviceGetResult(goVoyagesBest + "?op=GetBestPrices")
+      println(wsdl)
+      Ok(views.html.getWsdl(wsdl))
+  }
+
+  def byMarket = Action {
+    request =>
+      val sessionID =  getSession(request)      
+      Ok(views.html.byMarket(sessionID)).withSession(request.session + ("sessionID" -> sessionID))
+  }
+
+  def getAvailableDep= Action {
+    request =>
+      //initialise data
+      val post = request.body.asFormUrlEncoded
+      val dateFrom = post.get("dateFrom").head
+      val dateTo = post.get("dateTo").head
+      val marketCode = post.get("marketCode").head    
+      val lang = "fr"
+      val map = Map("dteFrom" -> Seq(dateFrom), "dateTo" -> Seq(dateTo), "marketCode" -> Seq(marketCode), "lng" -> Seq(lang))
+      
+      // we do the request here
+      val xmlString = getWebServicePostResult(goVoyagesModel + "/GetAvailableDepByMarket", map)
+      val deps = new GetAvailableDepByMarket(xmlString).deps      
+      Ok(views.html.getAvailableDep(deps))
+  }
+
+  def getAvailableDepByMarket= Action {
+    request =>
+      //initialise data
+      val post = request.body.asFormUrlEncoded
+      val dateFrom = post.get("dateFrom").head
+      val dateTo = post.get("dateTo").head
+      val marketCode = post.get("marketCode").head    
+      val lang = "fr"
+      val map = Map("dteFrom" -> Seq(dateFrom), "dateTo" -> Seq(dateTo), "marketCode" -> Seq(marketCode), "lng" -> Seq(lang))
+      
+      // we do the request here
+      val xmlString = getWebServicePostResult(goVoyagesModel + "/GetAvailableDepByMarket", map)
+      //println(xmlString)
+      val deps = new GetAvailableDepByMarket(xmlString).deps      
+      Ok(views.html.getAvailableDepByMarket(deps))
+  }
+
+  def getPopulatedZonesForIata = Action {
+    request =>
+      //initialise data
+      val post = request.body.asFormUrlEncoded
+      val dateFrom = swapMonth(post.get("dateFrom").head)
+      val dateTo = swapMonth(post.get("dateTo").head)    
+      val label = post.get("label").head    
+      val lang = "fr"
+      val map = Map("dteFrom" -> Seq(dateFrom), "dteTo" -> Seq(dateTo), "iataDep" -> Seq(label), "lng" -> Seq(lang))
+          
+      // we do the request here
+      val xmlString =  getWebServicePostResult(goVoyagesModel + "/GetPopulatedZonesForIata", map)
+      println(xmlString)
+      val zones = new ZonesResponse(xmlString).zones      
+      Ok(views.html.getPopulatedZonesForIata(zones))
+  }
+
+  def getBestPricesByCityIata = Action {
+    request =>
+    val post = request.body.asFormUrlEncoded
+    val label = post.get("label").head   
+    val lang = "fr"
+    val map = Map("iata" -> Seq(label), "lng" -> Seq(lang))
+    // we do the request here
+    val xmlString =  getWebServicePostResult(goVoyagesBest + "/GetBestPricesByCityIata",map)     
+    val bestPrices = new BestPricesByCityIata(xmlString)
+
+    if (post.get.get("filterzone") != None ){
+        val filterbyZone = post.get.get("filterzone").get.head.toInt
+        println(filterbyZone)
+        if(filterbyZone != -1) bestPrices.flights = bestPrices.flights.filter( _.zoneId == filterbyZone)
+    }
+
+    if(post.get.get("filterDes") != None ){
+       val filterDes = post.get.get("filterDes").get.head
+       println(filterDes)
+       if(filterDes != "") bestPrices.flights = bestPrices.flights.filter( _.arptDest == filterDes)
+    }
+
+    val groups = bestPrices.flights.groupBy(_.zoneId)   
+    Ok(views.html.getBestPricesByCityIata(groups, bestPrices))
+  }
 
   def clear = Action {
     Ok("Bye").withNewSession
@@ -24,8 +123,9 @@ object Application extends Controller {
   }
 
   def getSession[A](request: play.api.mvc.Request[A]) = {
-    val sessionID = request.session.get("sessionID")
-    if (sessionID == None) createHotelSessionID else sessionID.get
+    var sessionID = if (request.session.get("sessionID") == None) "" else request.session.get("sessionID").get
+    //val sessionID = request.session.get("sessionID")
+    if (sessionID == "") createHotelSessionID else sessionID
   }
 
   def index = Action {
@@ -68,8 +168,8 @@ object Application extends Controller {
   def getHotelDetails = Action {
     request =>
       val sessionID = getSession(request)
-      val post = request.body.asFormUrlEncoded
-      val hotelCode = post.get("hotelCode").head
+      //val post = request.body.asFormUrlEncoded
+      val hotelCode = request.queryString ("hotelCode").head
       val rgpc = new RequestGetProductContent(sessionID, productCode = hotelCode)
       var flag = true
       var result = ""
@@ -77,6 +177,7 @@ object Application extends Controller {
         result =  getHotelDetailsRequest(rgpc)
         if (true) flag = false
       }while(flag)
+      //println(result)
       val resHd = new ResponseGetProductContent(result)
       var imageName = ""
       for(products <- resHd.products;image <- products.images) {
@@ -130,15 +231,24 @@ object Application extends Controller {
         result =  checkhotelavailabilityAction(rha)
         if (true) flag = false
       }while(flag)
-      //println(result)
-      val resHa = new ResponseHotelAvailability(result)
-      Ok(views.html.searchHotel(resHa)).withSession(request.session + ("sessionID" -> sessionID))
+      println(result)
+
+      chooseViewOutput(result,
+       { val resHa = new ResponseHotelAvailability(result)
+         Ok(views.html.searchHotel(resHa)).withSession(request.session + ("sessionID" -> sessionID))
+       })      
   }
 
   def searchHotelForm = Action {
-    request =>
-      val sessionID = getSession(request)
+    request =>      
+      val sessionID = getSession(request)      
       Ok(views.html.searchHotelForm(sessionID)).withSession(request.session + ("sessionID" -> sessionID))
+  }
+
+  def searchHotelFormGoVoyage = Action {
+    request =>      
+      val sessionID = getSession(request)      
+      Ok(views.html.searchHotelFormGoVoyage(sessionID)).withSession(request.session + ("sessionID" -> sessionID))
   }
 
   def searchExcursionForm = Action {
@@ -163,12 +273,15 @@ object Application extends Controller {
 
       do {
         result =  checkExcurionAvailabilityAction(rea)
-        println(result)
+        //println(result)
         if (true) flag = false
       }while(flag)
       //println(result)
-      val resEa = new ResponseCheckExcursionAvailability(result)
-      Ok(views.html.searchExcursion(resEa)).withSession(request.session + ("sessionID" -> sessionID))
+
+       chooseViewOutput(result,
+       { val resEa = new ResponseCheckExcursionAvailability(result)
+        Ok(views.html.searchExcursion(resEa)).withSession(request.session + ("sessionID" -> sessionID))
+       })
   }
 
   def checkExcurionAvailabilityAction(rea : RequestCheckExcursionAvailability )  = {             
